@@ -2,8 +2,6 @@ import re
 import sys
 from datetime import datetime
 
-# import code; code.interact(local=dict(globals(), **locals()))
-
 def parse(filename, processors):
     'Process a given log file with provided processors'
     log_re = re.compile(r"""
@@ -28,7 +26,6 @@ def parse(filename, processors):
         (?P<duration_microseconds>\d+)
     """, re.VERBOSE)
 
-    # Scan through a string, looking for any location where this RE matches.
     match = re.compile(log_re).match
     matches = (match(line) for line in open(filename, 'r'))
 
@@ -40,9 +37,9 @@ def parse(filename, processors):
 
 class LineCount(object):
     def __init__(self):
-        self.lines = 0;
+        self.lines = 0
 
-    def process(self, matches):
+    def process(self, _matches):
         self.lines += 1
 
     def print_result(self):
@@ -50,16 +47,16 @@ class LineCount(object):
 
 class LogDuration(object):
     def __init__(self):
-        self.earliest_timestamp = None;
-        self.latest_timestamp = None;
+        self.earliest_timestamp = None
+        self.latest_timestamp = None
 
     def process(self, matches):
         timestamp_string = matches['timestamp'][0:-6] # Strip the trailing timezone
         timestamp = datetime.strptime(timestamp_string, '%d/%b/%Y:%H:%M:%S')
-        if self.earliest_timestamp == None or timestamp < self.earliest_timestamp:
+        if self.earliest_timestamp is None or timestamp < self.earliest_timestamp:
             self.earliest_timestamp = timestamp
 
-        if self.latest_timestamp == None or timestamp > self.latest_timestamp:
+        if self.latest_timestamp is None or timestamp > self.latest_timestamp:
             self.latest_timestamp = timestamp
 
     def print_result(self):
@@ -79,8 +76,9 @@ class MostRequestedPage(object):
 
         self.requested_pages[requested_page] += 1
 
-        if self.most_requested_page == None \
-                or self.requested_pages[self.most_requested_page] < self.requested_pages[requested_page]:
+        if self.most_requested_page is None \
+                or (self.requested_pages[self.most_requested_page]
+                        < self.requested_pages[requested_page]):
             self.most_requested_page = requested_page
 
     def print_result(self):
@@ -98,8 +96,9 @@ class MostFrequentVisitor(object):
 
         self.visitors[visitor] += 1
 
-        if self.most_frequent_visitor == None \
-                or self.visitors[self.most_frequent_visitor] < self.visitors[visitor]:
+        if self.most_frequent_visitor is None \
+                or (self.visitors[self.most_frequent_visitor]
+                        < self.visitors[visitor]):
             self.most_frequent_visitor = visitor
 
     def print_result(self):
@@ -111,7 +110,7 @@ class MinPageLoadTime(object):
 
     def process(self, matches):
         duration_microseconds = int(matches['duration_microseconds'])
-        if self.min_page_load_time == None \
+        if self.min_page_load_time is None \
                 or duration_microseconds < self.min_page_load_time:
             self.min_page_load_time = duration_microseconds
 
@@ -138,7 +137,7 @@ class MaxPageLoadTime(object):
 
     def process(self, matches):
         duration_microseconds = int(matches['duration_microseconds'])
-        if self.max_page_load_time == None \
+        if self.max_page_load_time is None \
                 or duration_microseconds > self.max_page_load_time:
             self.max_page_load_time = duration_microseconds
 
@@ -152,7 +151,7 @@ class NumberOfErrors(object):
     def process(self, matches):
         status_code = int(matches['status_code'])
         if status_code >= 400:
-            self.total_errors += 1;
+            self.total_errors += 1
 
     def print_result(self):
         print "Number of errors:", self.total_errors
@@ -173,16 +172,16 @@ def main():
         sys.exit(1)
     filename = sys.argv[1]
     processors = [
-            LineCount(),
-            LogDuration(),
-            MostRequestedPage(),
-            MostFrequentVisitor(),
-            MinPageLoadTime(),
-            AveragePageLoadTime(),
-            MaxPageLoadTime(),
-            NumberOfErrors(),
-            TotalDataTransfered()
-            ]
+        LineCount(),
+        LogDuration(),
+        MostRequestedPage(),
+        MostFrequentVisitor(),
+        MinPageLoadTime(),
+        AveragePageLoadTime(),
+        MaxPageLoadTime(),
+        NumberOfErrors(),
+        TotalDataTransfered()
+        ]
     parse(filename, processors)
     for processor in processors:
         processor.print_result()
