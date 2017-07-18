@@ -75,4 +75,6 @@ back to optimze if needed
 and I'd run into performance or memory constraints, but I believe that the matches
 generator expression will only pull lines as needed which is awesome. I do immediately
 make a match object for each line, but I'll fix that later
+- I get the same number of matched lines as `wc -l log_file`, and it's quick, but
+I should verify that each match group is present in each line too
 

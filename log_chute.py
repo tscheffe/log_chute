@@ -34,11 +34,16 @@ def parse(filename):
     matched_tuples = (match.groupdict() for match in matches if match)
 
     total = 0
+    bad_matches = 0
     for matched in matched_tuples:
-        print matched
+        # print matched
+        if None in matched.values():
+            bad_matches = bad_matches + 1
+            print "Bad match: ", matched
         total = total + 1
 
     print "Found matching lines: ", total
+    print "Found bad matches: ", bad_matches
     return matched_tuples
 
 def main():
