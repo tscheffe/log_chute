@@ -68,18 +68,11 @@ class LogDuration(object):
 
 class MostRequestedPage(object):
     def __init__(self):
-        self.request_matcher = re.compile(
-                '(?P<verb>[A-Z]+?)'
-                ' '
-                '(?P<page>/.*?)'
-                ' '
-                '(?P<method>HTTP/1\.\d)')
         self.requested_pages = {}
         self.most_requested_page = None
 
     def process(self, matches):
-        request_line = matches['request_line']
-        requested_page = self.request_matcher.match(request_line).group('page')
+        requested_page = matches['request_line']
 
         if requested_page not in self.requested_pages:
             self.requested_pages[requested_page] = 0
