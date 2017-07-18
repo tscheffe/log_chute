@@ -91,3 +91,6 @@ because we don't have a "request" piece, only response.
 - Implemented a simple class that responds to `process(matches)` and `print_result()`,
 basically the Visitor pattern. This worked perfectly for counting lines, now let's
 expand it.
+- Timestamps in 2.7 are not easy, fortunately we can just strip the timezone when
+we're only looking for duration, we'll assume all of the logs have the same timezone
+when doing the processing

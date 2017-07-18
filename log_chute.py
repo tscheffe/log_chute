@@ -1,5 +1,6 @@
 import re
 import sys
+from datetime import datetime
 
 # import code; code.interact(local=dict(globals(), **locals()))
 
@@ -37,7 +38,7 @@ def parse(filename, processors):
         for processor in processors:
             processor.process(matched)
 
-class LineCounter(object):
+class LineCount(object):
     def __init__(self):
         self.lines = 0;
 
@@ -47,6 +48,24 @@ class LineCounter(object):
     def print_result(self):
         print "Number of lines parsed: ", self.lines
 
+class LogDuration(object):
+    def __init__(self):
+        self.earliest_timestamp = None;
+        self.latest_timestamp = None;
+
+    def process(self, matches):
+        timestamp_string = matches['timestamp'][0:-6] # Strip the trailing timezone
+        timestamp = datetime.strptime(timestamp_string, '%d/%b/%Y:%H:%M:%S')
+        # import code; code.interact(local=dict(globals(), **locals()))
+        if self.earliest_timestamp == None or timestamp < self.earliest_timestamp:
+            self.earliest_timestamp = timestamp
+
+        if self.latest_timestamp == None or timestamp > self.latest_timestamp:
+            self.latest_timestamp = timestamp
+
+    def print_result(self):
+        duration = self.latest_timestamp - self.earliest_timestamp
+        print "Duration of log file", duration
 
 def main():
     if len(sys.argv) < 2:
@@ -54,10 +73,12 @@ def main():
         sys.exit(1)
     filename = sys.argv[1]
     processors = [
-            LineCounter(),
+            LineCount(),
+            LogDuration()
             ]
     parse(filename, processors)
-    processors[0].print_result()
+    for processor in processors:
+        processor.print_result()
 
 if __name__ == '__main__':
     main()
