@@ -1,30 +1,10 @@
 import re
 import sys
 
-# def parse(filename):
-#     print filename
-#     line = '172.16.0.3 - - [25/Sep/2002:14:04:19 +0200] "GET / HTTP/1.1" 401 - "" "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.1) Gecko/20020827"'
-#     regex = '([(\d\.)]+) - - \[(.*?)\] "(.*?)" (\d+) - "(.*?)" "(.*?)"'
-
-#     print re.match(regex, line).groups()
+    # import code; code.interact(local=dict(globals(), **locals()))
 
 def parse(filename):
     'Return tuple of dictionaries containing file data.'
-    def make_entry(x):
-        return {
-            'server_ip':x.group('ip'),
-            'uri':x.group('uri'),
-            'time':x.group('time'),
-            'status_code':x.group('status_code'),
-            'referral':x.group('referral'),
-            'agent':x.group('agent'),
-            }
-    # Scan through a string, looking for any location where this RE matches.
-    search = re.compile(log_re).search
-    matches = (search(line) for line in file(filename))
-    return (make_entry(x) for x in matches if x)
-
-def run_matcher(match_group):
     log_re = re.compile(r"""
         \A
         (?P<ip>[.:0-9a-fA-F]{7,45})
@@ -59,18 +39,7 @@ def main():
         print "You didn't pass a filename to parse!"
         sys.exit(1)
     filename = sys.argv[1]
-    # parse(filename)
-
-    run_matcher('ip')
-    run_matcher('identd')
-    run_matcher('userid')
-    run_matcher('timestamp')
-    run_matcher('uri')
-    run_matcher('status_code')
-    run_matcher('size')
-    run_matcher('referer')
-    run_matcher('user_agent')
-    run_matcher('duration_microseconds')
+    print parse(filename)
 
 if __name__ == '__main__':
     main()
