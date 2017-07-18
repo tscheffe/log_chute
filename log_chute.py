@@ -6,25 +6,27 @@ def parse(filename, processors):
     'Process a given log file with provided processors'
 
     log_re = re.compile(r"""
-        (?P<ip>[.:0-9a-fA-F]{7,45})
+        # LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\" %D"
+
+        (?P<ip>[.:0-9a-fA-F]{7,45})    # %h - client IP
         \s
-        (?P<identd>-|.+?)
+        (?P<identd>-|.+?)              # %l - identity of the client from `identd`
         \s
-        (?P<userid>-|.+?)
+        (?P<userid>-|.+?)              # %u - userid of client for password protected documents
         \s
-        \[(?P<timestamp>.+?)\]
+        \[(?P<timestamp>.+?)\]         # %t - timestamp
         \s
-        "(?P<request_line>[A-Z]+?\ /.*?\ HTTP/1\.\d)"
+        "(?P<request_line>[A-Z]+?\ /.*?\ HTTP/1\.\d)" # "%r" - request line from client
         \s
-        (?P<status_code>\d+?)
+        (?P<status_code>\d+?)          # %>s - status code of request
         \s
-        (?P<size_bytes>\d+?)
+        (?P<size_bytes>\d+?)           # %b - size of object returned to client, in bytes
         \s
-        "(?P<referer>.*?)"
+        "(?P<referer>.*?)"             # "%{Referer}i" - Referer HTTP request header
         \s
-        "(?P<user_agent>.*?)"
+        "(?P<user_agent>.*?)"          # "%{User-agent}i" - User-Agent HTTP request header
         \s
-        (?P<duration_microseconds>\d+)
+        (?P<duration_microseconds>\d+) # %D - time taken to serve request, in microseconds
     """, re.VERBOSE)
 
     match = re.compile(log_re).match
