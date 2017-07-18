@@ -75,12 +75,23 @@ class MostRequestedPage(object):
         print "Most requested page:"
 
 class MostFrequentVisitor(object):
-    def __init__(self): pass
+    def __init__(self):
+        self.visitors = {}
+        self.most_frequent_visitor = None
 
-    def process(self, matches): pass
+    def process(self, matches):
+        visitor = matches['ip']
+        if visitor not in self.visitors:
+            self.visitors[visitor] = 0
+
+        self.visitors[visitor] += 1
+
+        if self.most_frequent_visitor == None \
+                or self.visitors[self.most_frequent_visitor] < self.visitors[visitor]:
+            self.most_frequent_visitor = visitor
 
     def print_result(self):
-        print "Most frequent visitor:"
+        print "Most frequent visitor:", self.most_frequent_visitor
 
 class MinPageLoadTime(object):
     def __init__(self):
