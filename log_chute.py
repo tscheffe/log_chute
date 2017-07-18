@@ -25,7 +25,7 @@ def parse(filename, processors):
         \s
         "(?P<user_agent>.*?)"
         \s
-        (?P<duration_microseconds>\d+?)
+        (?P<duration_microseconds>\d+)
     """, re.VERBOSE)
 
     # Scan through a string, looking for any location where this RE matches.
