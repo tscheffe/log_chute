@@ -17,9 +17,6 @@ the following data:
     Number of errors:
     Total data transferred:
 
-NOTE: I should add p95 and total 400 vs 500 errors. But do it in an '--improved'
-mode so that if they have automated tests to verify things then it won't break them.
-
 # Notes:
 Combined Log Format:
 ```
