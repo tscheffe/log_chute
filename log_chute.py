@@ -19,7 +19,7 @@ def parse(filename, processors):
         \s
         (?P<status_code>\d+?)
         \s
-        (?P<size>\d+?)
+        (?P<size_bytes>\d+?)
         \s
         "(?P<referer>.*?)"
         \s
@@ -43,10 +43,10 @@ class LineCount(object):
         self.lines = 0;
 
     def process(self, matches):
-        self.lines = self.lines + 1
+        self.lines += 1
 
     def print_result(self):
-        print "Number of lines parsed: ", self.lines
+        print "Number of lines parsed:", self.lines
 
 class LogDuration(object):
     def __init__(self):
@@ -56,7 +56,6 @@ class LogDuration(object):
     def process(self, matches):
         timestamp_string = matches['timestamp'][0:-6] # Strip the trailing timezone
         timestamp = datetime.strptime(timestamp_string, '%d/%b/%Y:%H:%M:%S')
-        # import code; code.interact(local=dict(globals(), **locals()))
         if self.earliest_timestamp == None or timestamp < self.earliest_timestamp:
             self.earliest_timestamp = timestamp
 
@@ -67,6 +66,84 @@ class LogDuration(object):
         duration = self.latest_timestamp - self.earliest_timestamp
         print "Duration of log file", duration
 
+class MostRequestedPage(object):
+    def __init__(self): pass
+
+    def process(self, matches): pass
+
+    def print_result(self):
+        print "Most requested page:"
+
+class MostFrequentVisitor(object):
+    def __init__(self): pass
+
+    def process(self, matches): pass
+
+    def print_result(self):
+        print "Most frequent visitor:"
+
+class MinPageLoadTime(object):
+    def __init__(self):
+        self.min_page_load_time = None
+
+    def process(self, matches):
+        duration_microseconds = int(matches['duration_microseconds'])
+        if self.min_page_load_time == None \
+                or duration_microseconds < self.min_page_load_time:
+            self.min_page_load_time = duration_microseconds
+
+    def print_result(self):
+        print "Min page load time:", self.min_page_load_time
+
+class AveragePageLoadTime(object):
+    def __init__(self):
+        self.total_page_load_time = 0
+        self.total_pages_loaded = 0
+
+    def process(self, matches):
+        self.total_page_load_time += int(matches['duration_microseconds'])
+        self.total_pages_loaded += 1
+
+    def print_result(self):
+        average_load_time = float(self.total_page_load_time) / self.total_pages_loaded
+
+        print "Average page load time:", average_load_time
+
+class MaxPageLoadTime(object):
+    def __init__(self):
+        self.max_page_load_time = None
+
+    def process(self, matches):
+        duration_microseconds = int(matches['duration_microseconds'])
+        if self.max_page_load_time == None \
+                or duration_microseconds > self.max_page_load_time:
+            self.max_page_load_time = duration_microseconds
+
+    def print_result(self):
+        print "Max page load time:", self.max_page_load_time
+
+class NumberOfErrors(object):
+    def __init__(self):
+        self.total_errors = 0
+
+    def process(self, matches):
+        status_code = int(matches['status_code'])
+        if status_code >= 400:
+            self.total_errors += 1;
+
+    def print_result(self):
+        print "Number of errors:", self.total_errors
+
+class TotalDataTransfered(object):
+    def __init__(self):
+        self.total_data = 0
+
+    def process(self, matches):
+        self.total_data += int(matches['size_bytes'])
+
+    def print_result(self):
+        print "Total data transferred:", self.total_data
+
 def main():
     if len(sys.argv) < 2:
         print "You didn't pass a filename to parse!"
@@ -74,7 +151,14 @@ def main():
     filename = sys.argv[1]
     processors = [
             LineCount(),
-            LogDuration()
+            LogDuration(),
+            MostRequestedPage(),
+            MostFrequentVisitor(),
+            MinPageLoadTime(),
+            AveragePageLoadTime(),
+            MaxPageLoadTime(),
+            NumberOfErrors(),
+            TotalDataTransfered()
             ]
     parse(filename, processors)
     for processor in processors:

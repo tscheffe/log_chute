@@ -94,3 +94,11 @@ expand it.
 - Timestamps in 2.7 are not easy, fortunately we can just strip the timezone when
 we're only looking for duration, we'll assume all of the logs have the same timezone
 when doing the processing
+- Duration worked out well with the processor model, time to go ham and implement
+a bunch
+- I could combine min, max, and average page load times but that breaks consistency
+which dilutes the simplicity of the pattern. Sometimes to be understandable than DRY,
+and there really isn't much duplication. Better separation of concerns too.
+- Compared the `time` reported sizes for 11M file vs 1.3G file and it went from
+5456MB -> 5644MB which is O(1), awesome. Time went from 1.63s to 208s which is
+~127.7x slower, on a 128x larger file; O(n) based on file size!
