@@ -50,7 +50,7 @@ class LineCount(object):
         self.lines += 1
 
     def print_result(self):
-        print "Number of lines parsed:", self.lines
+        print("Number of lines parsed:", self.lines)
 
 class LogDuration(object):
     'Processor to determine the duration a log file spans based on timestamps'
@@ -72,7 +72,7 @@ class LogDuration(object):
 
     def print_result(self):
         duration = self.latest_timestamp - self.earliest_timestamp
-        print "Duration of log file", duration
+        print("Duration of log file", duration)
 
 class MostRequestedPage(object):
     'Processor to find the most requested page from a log file'
@@ -99,7 +99,7 @@ class MostRequestedPage(object):
             self.most_requested_page = requested_page
 
     def print_result(self):
-        print "Most requested page:", self.most_requested_page
+        print("Most requested page:", self.most_requested_page)
 
 class MostFrequentVisitor(object):
     'Processor to find the most frequent visitor based on IP address from a log file'
@@ -126,7 +126,7 @@ class MostFrequentVisitor(object):
             self.most_frequent_visitor = visitor
 
     def print_result(self):
-        print "Most frequent visitor:", self.most_frequent_visitor
+        print("Most frequent visitor:", self.most_frequent_visitor)
 
 class MinPageLoadTime(object):
     'Processor to determine the minimum page load time from a log file'
@@ -143,7 +143,7 @@ class MinPageLoadTime(object):
             self.min_page_load_time = duration_microseconds
 
     def print_result(self):
-        print "Min page load time:", self.min_page_load_time
+        print("Min page load time:", self.min_page_load_time)
 
 class AveragePageLoadTime(object):
     'Processor to determine the average page load time from a log file'
@@ -161,7 +161,7 @@ class AveragePageLoadTime(object):
     def print_result(self):
         average_load_time = float(self.total_page_load_time) / self.total_pages_loaded
 
-        print "Average page load time:", average_load_time
+        print("Average page load time:", average_load_time)
 
 class MaxPageLoadTime(object):
     'Processor to determine the maximum page load time from a log file'
@@ -178,7 +178,7 @@ class MaxPageLoadTime(object):
             self.max_page_load_time = duration_microseconds
 
     def print_result(self):
-        print "Max page load time:", self.max_page_load_time
+        print("Max page load time:", self.max_page_load_time)
 
 class NumberOfErrors(object):
     'Processor to count the number of errors recorded in a log file'
@@ -194,7 +194,7 @@ class NumberOfErrors(object):
             self.total_errors += 1
 
     def print_result(self):
-        print "Number of errors:", self.total_errors
+        print("Number of errors:", self.total_errors)
 
 class TotalDataTransfered(object):
     'Processor to sum the total data transfered, in bytes, from a log file'
@@ -209,14 +209,14 @@ class TotalDataTransfered(object):
         self.total_data += int(matches['size_bytes'])
 
     def print_result(self):
-        print "Total data transferred:", self.total_data
+        print("Total data transferred:", self.total_data)
 
 def main():
     'Entry function for the log_chute script'
 
     # Validate that we received a filename and then extract it
     if len(sys.argv) < 2:
-        print "You didn't pass a filename to parse!"
+        print("You didn't pass a filename to parse!")
         sys.exit(1)
     filename = sys.argv[1]
 
