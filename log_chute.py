@@ -6,7 +6,6 @@ import sys
 def parse(filename):
     'Return tuple of dictionaries containing file data.'
     log_re = re.compile(r"""
-        \A
         (?P<ip>[.:0-9a-fA-F]{7,45})
         \s
         (?P<identd>-|.+?)
@@ -26,13 +25,21 @@ def parse(filename):
         "(?P<user_agent>.*?)"
         \s
         (?P<duration_microseconds>\d+?)
-        \Z
     """, re.VERBOSE)
 
-    line = '134.178.48.89 - - [21/Apr/2013:03:16:31 -0500] "DELETE /kms/alert/form/ HTTP/1.0" 200 5110 "https://example.com/kms/ledes/import/" "Mozilla/5.0 (Windows NT 4.0; en-US; rv:1.9.1.20) Gecko/2015-07-27 10:27:01 Firefox/5.0" 2247'
-    matches = re.match(log_re, line)
-    # import code; code.interact(local=dict(globals(), **locals()))
-    print matches.group(match_group)
+    # Scan through a string, looking for any location where this RE matches.
+    match = re.compile(log_re).match
+    lines = file(filename).readlines()
+    print len(lines)
+    for line in lines:
+        print match(line).groupdict()
+    # Bets on if we'll have memory issues?
+    matches = (match(line) for line in file(filename).readlines())
+    match_tuples = (match.groupdict() for match in matches if match)
+
+    total = sum(1 for x in match_tuples)
+    print "Found matching lines: ", total
+    return match_tuples
 
 def main():
     if len(sys.argv) < 2:

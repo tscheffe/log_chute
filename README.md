@@ -57,6 +57,7 @@ Steps:
 - I like the idea of getting a dictionary back from the named groups and regex
 solves the problem completely, with no "special casing" token munging for the
 quoted segments, which seems more pythonic.
+  - Turns out that `MatchGroup.groupdict()` is exactly what I want!
 - Next step is to find a regex to use, or come up with one.
 - [This github project](https://github.com/lethain/apache-log-parser) actually
 uses a regex, I'll base mine off of that.
@@ -65,3 +66,13 @@ perfect
 - You can go _crazy_ with IP validation regexes but I elected to keep it as simple as possible
 - `\s` looked better than a `\ ` to me, and it won't get mauled by text editors
 that remove trailing whitespace
+- Decided to just get the regexes working without further iteration, I can come
+back to optimze if needed
+- Discovering how to do all the ruby tricks I'm used to like `binding.pry` and
+`obj.public_methods` is interesting
+- Generators and, what I believe are, "list comprehensions" are pretty slick
+- I was worried that I'd run into issues where every line in the file is slurped
+and I'd run into performance or memory constraints, but I believe that the matches
+generator expression will only pull lines as needed which is awesome. I do immediately
+make a match object for each line, but I'll fix that later
+
