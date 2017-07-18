@@ -102,3 +102,8 @@ and there really isn't much duplication. Better separation of concerns too.
 - Compared the `time` reported sizes for 11M file vs 1.3G file and it went from
 5456MB -> 5644MB which is O(1), awesome. Time went from 1.63s to 208s which is
 ~127.7x slower, on a 128x larger file; O(n) based on file size!
+- "Most requested page" is ambiguous, should 'PUT /xyz' and 'GET /xyz' count as
+the same page? Or different? In this case, it actually ends up being the same page
+but the difference could matter in the future. I'll commit both interpretations,
+though the "final version" will be the simplistic one where each different request
+line is treated as a unique key; no extracting of the "page".

@@ -15,7 +15,7 @@ def parse(filename, processors):
         \s
         \[(?P<timestamp>.+?)\]
         \s
-        "(?P<uri>[A-Z]+?\ /.*?\ HTTP/1.\d)"
+        "(?P<request_line>[A-Z]+?\ /.*?\ HTTP/1\.\d)"
         \s
         (?P<status_code>\d+?)
         \s
@@ -67,12 +67,31 @@ class LogDuration(object):
         print "Duration of log file", duration
 
 class MostRequestedPage(object):
-    def __init__(self): pass
+    def __init__(self):
+        self.request_matcher = re.compile(
+                '(?P<verb>[A-Z]+?)'
+                ' '
+                '(?P<page>/.*?)'
+                ' '
+                '(?P<method>HTTP/1\.\d)')
+        self.requested_pages = {}
+        self.most_requested_page = None
 
-    def process(self, matches): pass
+    def process(self, matches):
+        request_line = matches['request_line']
+        requested_page = self.request_matcher.match(request_line).group('page')
+
+        if requested_page not in self.requested_pages:
+            self.requested_pages[requested_page] = 0
+
+        self.requested_pages[requested_page] += 1
+
+        if self.most_requested_page == None \
+                or self.requested_pages[self.most_requested_page] < self.requested_pages[requested_page]:
+            self.most_requested_page = requested_page
 
     def print_result(self):
-        print "Most requested page:"
+        print "Most requested page:", self.most_requested_page
 
 class MostFrequentVisitor(object):
     def __init__(self):
