@@ -1,3 +1,19 @@
+# Usage
+```shell
+python log_chute.py path/to/log_file
+```
+
+Tested with Python 2.7.13 and Python 3.6.1.
+
+
+# Installation
+```shell
+git clone git@github.com:tscheffe/log_chute.git
+```
+
+No additional dependencies.
+
+# Requirements
 Take a 10MB Apache log file.  It's lines are formatted according to the standard
 "Combined" log format, with one addition: %D added as the last field in the format string.
 
