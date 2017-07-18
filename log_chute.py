@@ -1,10 +1,10 @@
 import re
 import sys
 
-    # import code; code.interact(local=dict(globals(), **locals()))
+# import code; code.interact(local=dict(globals(), **locals()))
 
-def parse(filename):
-    'Return tuple of dictionaries containing file data.'
+def parse(filename, processors):
+    'Process a given log file with provided processors'
     log_re = re.compile(r"""
         (?P<ip>[.:0-9a-fA-F]{7,45})
         \s
@@ -29,29 +29,35 @@ def parse(filename):
 
     # Scan through a string, looking for any location where this RE matches.
     match = re.compile(log_re).match
-    # Bets on if we'll have memory issues?
-    matches = (match(line) for line in file(filename).readlines())
+    matches = (match(line) for line in open(filename, 'r'))
+
     matched_tuples = (match.groupdict() for match in matches if match)
 
-    total = 0
-    bad_matches = 0
     for matched in matched_tuples:
-        # print matched
-        if None in matched.values():
-            bad_matches = bad_matches + 1
-            print "Bad match: ", matched
-        total = total + 1
+        for processor in processors:
+            processor.process(matched)
 
-    print "Found matching lines: ", total
-    print "Found bad matches: ", bad_matches
-    return matched_tuples
+class LineCounter(object):
+    def __init__(self):
+        self.lines = 0;
+
+    def process(self, matches):
+        self.lines = self.lines + 1
+
+    def print_result(self):
+        print "Number of lines parsed: ", self.lines
+
 
 def main():
     if len(sys.argv) < 2:
         print "You didn't pass a filename to parse!"
         sys.exit(1)
     filename = sys.argv[1]
-    parse(filename)
+    processors = [
+            LineCounter(),
+            ]
+    parse(filename, processors)
+    processors[0].print_result()
 
 if __name__ == '__main__':
     main()

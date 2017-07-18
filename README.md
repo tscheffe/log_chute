@@ -76,5 +76,18 @@ and I'd run into performance or memory constraints, but I believe that the match
 generator expression will only pull lines as needed which is awesome. I do immediately
 make a match object for each line, but I'll fix that later
 - I get the same number of matched lines as `wc -l log_file`, and it's quick, but
-I should verify that each match group is present in each line too
-
+I should verify that each match group is present in each line too. It works!
+- Tested the parser on a 1.3 gigabyte file, 128 times larger than the provided
+log file, and it works just takes awhile. Might try bigger later, but the iteration
+time slows down.
+- Tried to use `valgrind` to get the maximum memory used, just for fun, but can't
+be used without a "valgrind friendly" compiled Python that has debug enabled. But
+GNU `time`, and ZSH `time`, work as well, I'll be able to reduce memory footprint
+if needed.
+- Time to build out functionality and actually do something based on the matches
+- Middleware was a good idea, and it'd be interesting to implement with the first
+class functions in Python, but it's likely too complex. I bet I can do it simpler,
+because we don't have a "request" piece, only response.
+- Implemented a simple class that responds to `process(matches)` and `print_result()`,
+basically the Visitor pattern. This worked perfectly for counting lines, now let's
+expand it.
