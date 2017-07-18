@@ -93,6 +93,11 @@ class MostRequestedPage(object):
         self.requested_pages[requested_page] += 1
 
         # Keep running track of most requested page to avoid future comparisons
+        # NOTE: This has has potentially unexpected behavior when there is a tie,
+        #       whichever page gets their "highest number of requests" first will
+        #       win and be displayed. Some business logic could be added to
+        #       address that but that's additional requirements gathering with
+        #       stakeholders, which will be put on hold for now
         if self.most_requested_page is None \
                 or (self.requested_pages[self.most_requested_page]
                         < self.requested_pages[requested_page]):
@@ -120,6 +125,11 @@ class MostFrequentVisitor(object):
         self.visitors[visitor] += 1
 
         # Keep running track of the most frequent visitor to avoid future comparisons
+        # NOTE: This has has potentially unexpected behavior when there is a tie,
+        #       whichever visitor gets their "highest number of visits" first will
+        #       win and be displayed. Some business logic could be added to
+        #       address that but that's additional requirements gathering with
+        #       stakeholders, which will be put on hold for now
         if self.most_frequent_visitor is None \
                 or (self.visitors[self.most_frequent_visitor]
                         < self.visitors[visitor]):
