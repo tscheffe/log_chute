@@ -33,6 +33,65 @@ the following data:
     Number of errors:
     Total data transferred:
 
+# Discussion Points
+## Assumptions
+I made assumptions in three places: how to interpret ambiguous requirements, that
+the quality of the input log file is high, and that the constraint is on memory
+not time.
+
+There weren't many ambiguous requirements, they were appropriately specific for the
+most part. I had to define what a "requested page" was and guess what the "duration"
+meant. I elected to go with the most simplistic interpretation each time, leaving
+room for further business logic in the future if needed.
+
+At the start I was worried about encodings, line endings, malformed logs, that sort
+of thing. As implementation proceeded I found that the provided log file was uniform
+and easily parsed. The code isn't "hardened", if a malformed log was input then it
+would certainly break. I'm not familiar with the Apache logging and can't predict
+what sorts of issues I should validate to avoid, so I assumed that the quality
+would be consistent. If there is a problem in the future it should be easy to address
+and add a validation for protection.
+
+If you hadn't mentioned "will be tested with a substantially larger one" then I
+don't think I would have gone to the lengths I did to ensure memory safety. I've
+over-optimized for that in the past and wasted time when I didn't need to, now I'm
+wary about investing time there. Previous experience did help me get it right without
+much of a struggle, or maybe Python just gets it right by default.
+
+## Verification
+I elected to verify by hand rather than with unit tests. Everything is imperative,
+if anything breaks then everything will. It's like singing the ABCs, you don't need
+to practice A -> B independent of C -> D. For implementing, I had a REPL open and
+would try something in there to verify and then codify it before running the script
+again to determine that the feature I had just implemented worked as part of the whole.
+
+For the individual output values, I compared them to numbers derived from shell tools
+like `wc -l log_File`, `ag --count '192.168.1.1' log_file`, and
+`awk '{sum+=$NF} END {print sum}'`.
+
+## Limitations
+I didn't run into too many limitations with the actual problem, only with how my
+experiences relate to it. I'm not as familiar with Python so there was a lot of
+"python #{problem I want to solve but don't know how}" googling. I even proc'd the
+Google "you're speaking our language" test for Python which was interesting. For
+the most part, I had a good idea for what I wanted to do and was limited by how
+to actually implement it but that's a part of learning and continued to be interesting.
+
+## PEP8/Style
+Ran `pylint` with the default configuration and got a good score, remaining
+violations are `superfluous-parens` for `print` which I'm ignoring to maintain
+Python 3.6 compatability and a few `missing-docstring` for the `__init__` and
+`print_result` methods which I felt were superfluous and would only add additional
+noise.
+
+I also reread the PEP8 style guide and feel that I'm in line with it.
+
+## Git Commits and Commit Messages
+If this were proper _Github Flow_ I would clean up my commits by squashing them
+down into a nice clean history. For now I've elected to leave them as-is and
+maintain an unfiltered history. Of course, they're all "high quality", tpope approved,
+messages as qualified by [this blog post](https://chris.beams.io/posts/git-commit/).
+
 # Notes:
 Combined Log Format:
 ```
@@ -61,7 +120,7 @@ Thoughts before starting:
 - I don't know if we'll run into tricky encoding problems or not, best to not worry about it
 until something happens.
 
-Steps:
+# Development Steps/Process:
 - First I looked up documentation for the Apache Combined Log Format
 - Googled Python apache log parser
 - Found some github projects, seemed complex
