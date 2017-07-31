@@ -14,24 +14,9 @@ git clone git@github.com:tscheffe/log_chute.git
 No additional dependencies.
 
 # Requirements
-Take a 10MB Apache log file.  It's lines are formatted according to the standard
-"Combined" log format, with one addition: %D added as the last field in the format string.
+Given an Apache log file, lines formatted according to the standard "Combined" log format plus %D at the end.
 
-Write a Python program that takes a filename as its only argument, and outputs
-the following data:
-
-    Number of lines parsed:
-    Duration of log file:
-
-    Most requested page:
-    Most frequent visitor:
-
-    Min page load time:
-    Average page load time:
-    Max page load time:
-
-    Number of errors:
-    Total data transferred:
+Deliver a python script that takes a filename and outputs some data:
 
 # Discussion Points
 ## Assumptions
